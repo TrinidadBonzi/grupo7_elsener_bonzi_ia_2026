@@ -16,18 +16,18 @@ class RoverProblem (SearchProblem):
         taladro_equipado = None
         carga_actual = 0
         
-        todas = (
+        mapaP = (
             [rover_inicio]
             + list(zonas_sombra)
             + list(muestras_igneas)
             + list(muestras_sedimentarias)
         )
 
-        self.min_x = min(x for x, y in todas) 
-        self.max_x = max(x for x, y in todas) 
+        self.min_x = min(x for x, y in mapaP) 
+        self.max_x = max(x for x, y in mapaP) 
 
-        self.min_y = min(y for x, y in todas) 
-        self.max_y = max(y for x, y in todas) 
+        self.min_y = min(y for x, y in mapaP) 
+        self.max_y = max(y for x, y in mapaP) 
         
         inicial = (rover_inicio, bateria_inicial, taladro_equipado, carga_actual, tuple(muestras_igneas), tuple(muestras_sedimentarias))
         super(RoverProblem, self).__init__(inicial)
@@ -84,14 +84,16 @@ class RoverProblem (SearchProblem):
             if posicionRover in mSedimentaria and taladro == "percusion":
                 acciones.append(("recolectar", "sedimentaria"))
                 
-        if carga > 0 and bateriaInicial > 1:  # necesita al menos 2 para no quedar en 0
+        if carga > 0 and bateriaInicial > 1:
             if carga == self.capacidad_maxima:
                 acciones.append(("depositar", None))
-            elif carga == 1 and (len(mIgnea) + len(mSedimentaria) == 0):
+            elif carga > 0 and not (mIgnea or mSedimentaria):
                 acciones.append(("depositar", None))
 
         if bateriaInicial < self.bateria_maxima and posicionRover not in self.zonas_sombra:
             acciones.append(("recargar", None))
+
+
           
         return acciones
     
@@ -153,20 +155,38 @@ class RoverProblem (SearchProblem):
         elif accion == "recolectar":
             return 2
         elif accion == "depositar":
-            return 1  # tiempo fijo
+            return carga
 
         elif accion == "recargar":
             return 4
-                    
-def heuristic(self, state):
-       posicionRover, _, _, _, mIgnea, mSedimentaria = state
-       muestras = list(mIgnea) + list(mSedimentaria)
-       if not muestras:
-           return 0
-       x, y = posicionRover
-       dist_min = min(abs(mx - x) + abs(my - y) for mx, my in muestras)
-       return dist_min + len(muestras) * 2
-        
+    
+    
+    def heuristic(self, state):
+        posicionRover, bateria, taladro, carga, mIgnea, mSedimentaria = state
+        muestras = list(mIgnea) + list(mSedimentaria)
+        if not muestras:
+            return 0
+
+        x, y = posicionRover
+
+        dist_min = min(abs(mx - x) + abs(my - y) for mx, my in muestras)
+        costo_movimiento = (dist_min + 1) // 2  
+
+        n = len(muestras)
+
+        necesita_equipar = 0
+        if mIgnea and taladro != "termico":
+            necesita_equipar = 3
+        elif mSedimentaria and taladro != "percusion":
+            necesita_equipar = 3
+
+        costo_recoleccion = n * 3 + necesita_equipar
+
+        recargas_minimas = max(0, (dist_min - bateria + 1 + 7) // 8) if dist_min > 0 else 0
+        costo_recargas = recargas_minimas * 4
+
+        return costo_movimiento + costo_recoleccion + costo_recargas
+  
         
 def planear_rover(
     rover_inicio,
