@@ -75,4 +75,52 @@ class RoverProblem (SearchProblem):
         
         return acciones
     
+    def result(self, state, actions):
+        posicionRover, bateriaInicial, taladro, carga, mIgnea, mSedimentaria = state
+        accion, parametro = action 
+        
+        if accion == "moverse":
+            posicionRover = parametro
+            bateriaInicial -= 1
+        
+        elif accion == "sobremarcha":
+            posicionRover = parametro
+            bateriaInicial -= 4
+            
+        elif accion == "equipar":
+            taladro = parametro
+            bateriaInicial -= 1
+        
+        elif accion == "recolectar":
+            carga += 1
+            bateriaInicial -= 3
+            
+            igneas = list(mIgnea)
+            sedimentarias = list(mSedimentaria)
+            
+            if parametro == "ignea":
+                igneas.remove(posicionRover)
+            elif parametro == "sedimentaria":
+                sedimentarias.remove(posicionRover)
+            
+            mIgnea = tuple(igneas)
+            mSedimentaria = tuple(sedimentarias)
+        
+        elif accion == "depositar":
+            carga = 0
+            bateriaInicial -= 1
+            
+        elif accion == "recargar":
+            bateria += 10
+            
+            if bateria > self.bateria_maxima:
+                bateria = self.bateria_maxima
+        
+        return (posicionRover, bateriaInicial, taladro, carga, mIgnea, mSedimentaria)
+    
+    
+                
+        
+        
+        
     
