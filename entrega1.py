@@ -92,9 +92,7 @@ class RoverProblem (SearchProblem):
 
         if bateriaInicial < self.bateria_maxima and posicionRover not in self.zonas_sombra:
             acciones.append(("recargar", None))
-
-
-          
+  
         return acciones
     
     def result(self, state, action):
@@ -156,7 +154,6 @@ class RoverProblem (SearchProblem):
             return 2
         elif accion == "depositar":
             return carga
-
         elif accion == "recargar":
             return 4
     
