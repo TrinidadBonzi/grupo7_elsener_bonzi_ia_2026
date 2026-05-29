@@ -40,13 +40,21 @@ def test_modulo_existe():
             import entrega1
         except ModuleNotFoundError:
             pytest.fail("No se encuentra el módulo entrega1.py")
+        try:
+            import entrega1_por_ia
+        except ModuleNotFoundError:
+            pytest.fail("No se encuentra el módulo entrega1_por_ia.py")
 
 
 @pytest.fixture()
 def planear_rover():
     import entrega1
+    import entrega1_por_ia
     fn = getattr(entrega1, "planear_rover", None)
-    return fn
+    fn_ia = getattr(entrega1_por_ia, "planear_rover", None)
+
+    #return fn
+    return fn_ia
 
 
 @pytest.mark.dependency(depends=["test_modulo_existe"])
