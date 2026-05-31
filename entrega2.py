@@ -18,6 +18,9 @@ def build_camp(camp_size, habs, generators, labs, deposits, airlocks, craters):
         
     posiciones_validas = []
 
+    if variables == None:
+        return []
+
     for f in range(fila):
         for c in range(columna):
             if (f, c) not in craters:
@@ -67,7 +70,6 @@ def build_camp(camp_size, habs, generators, labs, deposits, airlocks, craters):
         return abs(f1 - f2) + abs(c1 - c2) != 1
     for var1 in variables:
         for var2 in variables:
-
             if var1[0] == "gen" and var2[0] == "hab":
 
                 restricciones.append(
@@ -92,23 +94,26 @@ def build_camp(camp_size, habs, generators, labs, deposits, airlocks, craters):
     def DepositosCercanos(vars, values):
         (f1, c1) = values[0]
 
-        for i in range(len(vars)):
-            if vars[i][0] == "dep":
-                (f2, c2) = values[i]
+        for i in range(1, len(values)):
+            (f2, c2) = values[i]
 
-                if abs(f1 - f2) + abs(c1 - c2) == 1:
-                    return True
+            if abs(f1 - f2) + abs(c1 - c2) == 1:
+                return True
         return False
     for var in variables:
         if var[0] == "lab":
+            restriccionv= [var]
+            for dep in variables:
+                if dep[0] == "dep":
+                    restriccionv.append(dep)
             restricciones.append(
-                ((var,), DepositosCercanos)
+                (tuple(restriccionv), DepositosCercanos)
             )
     
     def Evacuacion(vars, values):
             (hr, hc) = values[0]
             
-            ocupados = set(values[1:])  # otros módulos
+            ocupados = set(values[1:])
 
             for dr, dc in [
                 (hr-1, hc), (hr+1, hc), (hr, hc-1), (hr, hc+1)
@@ -121,6 +126,7 @@ def build_camp(camp_size, habs, generators, labs, deposits, airlocks, craters):
             restricciones.append(
                 ((var,), Evacuacion)
             )
+
     for dominio in dominios.values():
         if not dominio:
             return None
