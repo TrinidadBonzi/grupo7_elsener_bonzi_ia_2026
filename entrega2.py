@@ -26,57 +26,39 @@ def build_camp(camp_size, habs, generators, labs, deposits, airlocks, craters):
     dominios = {}
 
     for variable in variables:
-        dominios[variable] = posiciones_validas
-        
-        
+        dominios[variable] = []
+
+        for f, c in posiciones_validas:
+            if variable[0] == "air":
+                if (
+                    f == 0 or
+                    f == fila - 1 or
+                    c == 0 or
+                    c == columna - 1
+                ):
+                    dominios[variable].append((f, c))
+            elif variable[0] == "hab":
+                if (
+                    f != 0 and
+                    f != fila - 1 and
+                    c != 0 and
+                    c != columna - 1
+                ):
+                    dominios[variable].append((f, c))
+            else:
+                dominios[variable].append((f, c))
+                     
     restricciones = []
     
-    def noSuperposicion(variables, valores):
-        return len(set(valores)) == len(valores)
-    
+    def noSuperposicion(variables, valores): 
+        n = len(variables)
+        for i in range(n):
+            for j in range(n):
+                if (i != j):
+                   if valores[i] == valores[j]:
+                        return False
+        return True    
     restricciones.append((variables, noSuperposicion))
-    
-    def airlockBorde(variables, valores):
-        var = variables[0] 
-        val = valores[0] 
-
-        if var[0] != "air": 
-            return True
-
-        f, c = val
-
-        return (
-            f == 0 or
-            f == fila - 1 or
-            c == 0 or
-            c == columna - 1
-        )
-    for variable in variables:
-        if variable[0] == "air":
-            restricciones.append(
-                ((variable,), airlockBorde)
-            )
-    
-    def habsNoBorde (variables, valores):
-        var = variables[0]
-        val = valores[0]
-
-        if var[0] != "hab":
-            return True
-
-        f, c = val
-
-        return (
-            f != 0 and
-            f != fila - 1 and
-            c != 0 and
-            c != columna - 1
-        )
-    for variable in variables:
-        if variable[0] == "hab":
-            restricciones.append(
-                ((variable,), habsNoBorde)
-            )
         
     def SeguridadEnergetica(vars, values):
 
@@ -139,6 +121,9 @@ def build_camp(camp_size, habs, generators, labs, deposits, airlocks, craters):
             restricciones.append(
                 ((var,), Evacuacion)
             )
+    for dominio in dominios.values():
+        if not dominio:
+            return None
     problema = CspProblem(variables, dominios, restricciones)
     solucion = min_conflicts(problema, iterations_limit=1000)
     resultado_final = []
