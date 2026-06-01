@@ -123,7 +123,11 @@ def build_camp(camp_size, habs, generators, labs, deposits, airlocks, craters):
             ]:
                 if (
                     pos not in ocupados and
-                    pos not in craters
+                    pos not in craters and
+                    0 <= pos[0] and
+                    pos[0] < fila and
+                    0 <= pos[1] and
+                    pos[1] < columna
                 ):
                     return True
             return False
