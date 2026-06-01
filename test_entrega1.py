@@ -53,8 +53,8 @@ def planear_rover():
     fn = getattr(entrega1, "planear_rover", None)
     fn_ia = getattr(entrega1_por_ia, "planear_rover", None)
 
-    #return fn
-    return fn_ia
+    return fn
+    #return fn_ia
 
 
 @pytest.mark.dependency(depends=["test_modulo_existe"])
