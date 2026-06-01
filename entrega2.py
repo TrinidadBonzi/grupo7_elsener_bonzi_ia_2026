@@ -18,7 +18,7 @@ def build_camp(camp_size, habs, generators, labs, deposits, airlocks, craters):
         
     posiciones_validas = []
 
-    if variables == None:
+    if not variables:
         return []
 
     for f in range(fila):
@@ -111,24 +111,34 @@ def build_camp(camp_size, habs, generators, labs, deposits, airlocks, craters):
             )
     
     def Evacuacion(vars, values):
-            (hr, hc) = values[0]
+            (hf, hc) = values[0]
             
-            ocupados = set(values[1:])
+            ocupados = values[1:]
 
-            for dr, dc in [
-                (hr-1, hc), (hr+1, hc), (hr, hc-1), (hr, hc+1)
+            for pos in [
+                (hf-1, hc),
+                (hf+1, hc),
+                (hf, hc-1),
+                (hf, hc+1)
             ]:
-                if (dr, dc) not in ocupados and (dr, dc) not in craters:
+                if (
+                    pos not in ocupados and
+                    pos not in craters
+                ):
                     return True
             return False
     for var in variables:
         if var[0] == "hab":
+            restriccionv = [var]
+            for var2 in variables:
+                if var2[0] != "hab":
+                    restriccionv.append(var2)
             restricciones.append(
-                ((var,), Evacuacion)
+                (tuple(restriccionv), Evacuacion)
             )
 
-    for dominio in dominios.values():
-        if not dominio:
+    for variable in dominios:
+        if len(dominios[variable]) == 0:
             return None
     problema = CspProblem(variables, dominios, restricciones)
     solucion = min_conflicts(problema, iterations_limit=1000)
