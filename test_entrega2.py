@@ -43,13 +43,20 @@ def test_modulo_existe():
             import entrega2
         except ModuleNotFoundError:
             pytest.fail("No se encuentra el módulo entrega2.py")
+        try:
+            import entrega2_por_ia
+        except ModuleNotFoundError:
+            pytest.fail("No se encuentra el módulo entrega2_por_ia.py")
 
 
 @pytest.fixture()
 def build_camp():
     import entrega2
+    import entrega2_por_ia
     fn = getattr(entrega2, "build_camp", None)
+    fn_ia = getattr(entrega2_por_ia, "build_camp", None)
     return fn
+    #return fn_ia
 
 
 @pytest.mark.dependency(depends=["test_modulo_existe"])
