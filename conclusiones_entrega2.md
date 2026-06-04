@@ -1,0 +1,9 @@
+Conclusiones 2 usando Cloud
+
+Al comparar ambas soluciones vimos que, las dos contemplan las restricciones principales de la consigna, como evitar superposiciones, ubicar las esclusas en el borde, mantener los habitacionales alejados de los generadores y garantizar la cercanía entre laboratorios y depósitos.
+
+También encontramos diferencias en la forma de representar las variables y las restricciones. En nuestra implementación usamos tuplas para identificar cada módulo y definimos algunas restricciones de manera global, como la de no superposición, mientras que la solución generada por IA trabaja con nombres de variables en formato de texto y construye una mayor cantidad de restricciones binarias. Esto hace que ambas soluciones lleguen a resultados similares, aunque modelado de diferentes maneras.
+
+Otra diferencia importante es el tratamiento de algunas condiciones. La solución generada por IA incorpora validaciones adicionales para detectar ciertos casos imposibles antes de ejecutar la búsqueda, como la existencia de laboratorios sin depósitos disponibles. Nuestra implementación, se enfoca en representar directamente las restricciones del problema y delega en el algoritmo la tarea de encontrar una asignación válida o determinar que no existe solución.
+
+Si bien ambas soluciones logran resolver correctamente los casos analizados, consideramos que nuestra propuesta representa de forma clara y directa las restricciones planteadas en la consigna. Además, el uso de restricciones globales en algunos aspectos permite expresar ciertas condiciones de manera más compacta y fácil de interpretar. En general, las dos alternativas son válidas: la solución generada por IA incorpora más verificaciones previas, mientras que nuestra implementación tiene una representación más simple y cercana a la formulación original del problema.

@@ -1,4 +1,4 @@
-#Conclusiones
+#Conclusiones usando Copilot y Gemini
 
 Al comparar ambas soluciones vimos que las dos representan información similar dentro de cada estado, como la posición del rover, la batería, el taladro equipado, la carga y las muestras pendientes. Aunque nuestra implementación incorpora algunas restricciones adicionales para que el rover no considere acciones innecesarias y para ajustarse mejor a las condiciones planteadas en la consigna.
 
